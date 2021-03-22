@@ -10,12 +10,11 @@
 
 var path = require('path');
 var express = require('express');
-var app = express();
 var fs = require('fs');
-const readline = require('readline');
+
+var app = express();
 
 const querystring = require('querystring');
-const { notEqual } = require('assert');
 
 //Futuro:
 
@@ -61,7 +60,11 @@ function listar_fotos(pasta_FOTOS,SAIDA_pasta_arquivo_LISTA_ARQUIVOS)
 
         informacao_TXT=Object.values(lista_arquivos).join("\n");
 
-        informacao_TXT=informacao_TXT+"\n";
+        if(informacao_TXT.length>0)
+        {
+            informacao_TXT=informacao_TXT+"\n";
+        }
+        
 
 //console.log("ARQUIVO  informacao_TXT  "+completo_pasta_FOTOS+'/lista_arquivos.txt', informacao_TXT);
 
@@ -103,27 +106,29 @@ function listar_fotos(pasta_FOTOS,SAIDA_pasta_arquivo_LISTA_ARQUIVOS)
 
 app.get("/", pagina_inicial);
 
-//-----------------------------------------Etiqueta de fofihhos (Minha Esposa Elaine adora animais)
-app.get("/porno/", GET_listar_fotos);
-    app.get("/porno/registrando/*", registrando);
-    app.get("/porno/*", generico);
-///////   A utilidade desta etiqueta (Fofinho) é para organizar as ajudas R$    
+/////////////////////// Colocando de forma dinamica os ENDPOINTS ////
+ENDPOINTS_etiqueta();
 
-//-----------------------------------------Etiqueta de fofihhos (Minha Esposa Elaine adora animais)
-app.get("/fofinhos/", GET_listar_fotos);
-    app.get("/fofinhos/registrando/*", registrando);
-    app.get("/fofinhos/*", generico);
-///////   A utilidade desta etiqueta (Fofinho) é para organizar as ajudas R$
+function ENDPOINTS_etiqueta() {
 
-//----------------------------------------------Etiqueta de Venezuela:
-app.get("/venezuela/", GET_listar_fotos);
-//Usa-se a função GENERICO para poder apresentar outros arquivos: Fotos, JS, etc.    
-    app.get("/venezuela/registrando/*", registrando);
-//Para visualizar os que já estão classificados:
-    app.get("/venezuela/classificados/", venezuela_listar_fotos_classificadas);    
-app.get("/venezuela/*", generico);
+//Lendo os diretorios presentes na pasta de ETIQUETAS
+    const completo_pasta_INICIAL = path.join(__dirname, "/etiquetas/"); 
+    const dirents = fs.readdirSync(completo_pasta_INICIAL, { withFileTypes: true });
     
-///////   A utilidade desta etiqueta (Venezuela)
+    const filesNames = dirents.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
+    
+    filesNames.forEach(element => {
+        console.log("http://localhost:3001/"+element+"/");
+        app.get("/"+element+"/", GET_listar_fotos);
+        
+        app.get("/"+element+"/registrando/*", registrando);
+//Com o intuito de colocar mais etiquetas   
+//Caso de mais uma (01) etiqueta
+
+        app.get("/"+element+"/*/*.png/:nova/", registrando_mais_etiquetas);
+        app.get("/"+element+"/*", generico);
+    });
+}
 
 
 ///////////////////////// GET inicial /////////////////////////////
@@ -148,7 +153,7 @@ function pagina_inicial(req, res, next) {
     });
 
     saida+="</ol>";
-console.log("completo_pasta_INICIAL  "+saida);
+//console.log("completo_pasta_INICIAL  "+saida);
     res.send(saida);
     //res.sendStatus(200);    
 }
@@ -156,6 +161,8 @@ console.log("completo_pasta_INICIAL  "+saida);
 ///////////////////////// Registros das Etiquetas /////////////////////////////
 
 function registrando(req, res, next) {
+
+    //console.log(req.path)
 
     nome_arquivo=req.path.split("/")[3];
 
@@ -178,7 +185,40 @@ function registrando(req, res, next) {
     res.sendStatus(200);
 }
 
-///////////////////////// FOFINHOS /////////////////////////////
+///////////////////////// Multiplas etiquetas /////////////////////////////
+
+//Caso SIMPLES: de mais uma (01) etiqueta, o sistema registra a nova etiqueta
+
+function registrando_mais_etiquetas(req,res,next)
+{
+    
+    if(req.path.slice(-1)!="/")
+    {
+        res.send(req.path+"/");
+        return;
+    }
+    nova_etiqueta=req.params.nova;
+    novareq=req.path.replace("/"+nova_etiqueta+"/","");        
+
+    nome_arquivo=req.path.split("/")[4];
+
+    decodificando_endereco_url=querystring.parse(nome_arquivo);
+    file=Object.keys(decodificando_endereco_url)[0];    
+
+// Construindo o endereço no qual serão colocadas as etiquetas    
+    //console.log("nome_pasta_etiquetas  "+file);
+
+    const SAIDA_pasta_arquivo_LISTA_ARQUIVOS = './etiquetas/'+nova_etiqueta;
+
+    fs.appendFile(SAIDA_pasta_arquivo_LISTA_ARQUIVOS+'/fotos_etiquetadas.txt', file+"\n", function (err,data) {
+        if (err) {
+            return console.log("erro de escrita do arquivo"+err);
+        }
+    });  
+  
+
+    res.redirect(novareq);
+}
 
 
 ///////////////////////// VENEZUELA /////////////////////////////
@@ -231,15 +271,22 @@ function venezuela_listar_fotos_classificadas(req, res, next) {
 
 const pasta_fotos="passo_1"; 
 
+/**
+Função que entrega qualquer arquivo solicitado.
+
+
+
+
+ */
 function generico(req, res, next) {
 
 //No caso entregar as fotos CONTIDAS na pasta das já etiquetadas, fas um tratamento a mais
 
     var dir = path.join(__dirname, "etiquetas"); 
     var previo_file = path.join(dir, req.path.replace(/\/$/, '/index.html'));   
-    var file=previo_file
+    var file=previo_file;
 
-//console.log("function venezuela  "+req.path);      
+//console.log("function venezuela  "+req.path);     No caso de ter uma indicação clara da pasta fotos!! 
     
     if(req.path.includes(pasta_fotos)>0)
     {
@@ -249,9 +296,9 @@ function generico(req, res, next) {
     
         decodificando_endereco_url=querystring.parse(previo_file);
         file=Object.keys(decodificando_endereco_url)[0];    
-        elementos_file=file.split("/").length
+        //elementos_file=file.split("/").length
 
-//console.log("Entregando FOTOS  "+elementos_file);   
+//console.log("Entregando FOTOS  "+elementos_file);   Proibe a entrega daqueles fora da pasta de fotos
 
         if (file.indexOf(dir + path.sep) !== 0) {
             return res.status(403).end('Forbidden');
@@ -259,39 +306,26 @@ function generico(req, res, next) {
     }  
 
     var type = mime[path.extname(file).slice(1)] || 'text/plain';
-    var s = fs.createReadStream(file);
-    s.on('open', function () {
+//Envio do arquivo por PIPE
+    var stream_pastas_locais = fs.createReadStream(file);
+
+    stream_pastas_locais.on('open', function () {
         res.set('Content-Type', type);
-        s.pipe(res);
-    });
-}
-
-///////////////////////// FIM  
-///////////////////////// Colombia /////////////////////////////
-
-function colombia(req, res, next) {
-
-    var dir = path.join(__dirname, "etiquetas");
-    var previo_file = path.join(dir, req.path.replace(/\/$/, '/index.html'));   
-
-    var type = mime[path.extname(previo_file).slice(1)] || 'text/plain';
-    var s = fs.createReadStream(previo_file);
-    s.on('open', function () {
-        res.set('Content-Type', type);
-        s.pipe(res);
+        stream_pastas_locais.pipe(res);
     });
 
-    var pasta_fotos_etiquetadas= path.join(dir, req.path);   
-    var pasta_fotos_nao_etiquetadas = path.join(__dirname, "./passo_1");
+    //stream_pastas_locais.on('error', onError);
 
-    var lineReader = require('readline').createInterface({
-        input: require('fs').createReadStream(pasta_fotos_nao_etiquetadas+"/lista_arquivos.txt")
-      }).on('line', function (line) {
-        console.log('Registrado :', line);
-      });
+    stream_pastas_locais.on('error', function (err) {
+        res.send("Erro função (GENERICO) "+req.path);
+        next();
+    });
 
-    console.log("Roteamento Explicito  "+pasta_fotos_nao_etiquetadas);    
 }
+
+//
+//
+//
 
 ///////////////////////// FIM  
 
@@ -299,6 +333,6 @@ function colombia(req, res, next) {
  * Servidor escutando na porta 3000 
  */
 
-app.listen(3000, function () {
-    console.log('Listening on http://localhost:3000/');
+app.listen(3001, function () {
+    console.log('Listening on http://localhost:3001/');
 });
