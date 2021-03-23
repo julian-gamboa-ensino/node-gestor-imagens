@@ -1,10 +1,12 @@
 /***
- * O passo inicial consiste em listar os arquivos (fotos PNG)
- * com ajuda da função:
- *  listar_fotos
- * Por este motivo deve-se coloca na Pasta de cada etiqueta o aqruivo "lista_arquivos.txt", o que 
- * é feito com a ajuda da função *_listar_fotos (Exemplo: venezuela_listar_fotos, fofinhos_listar_fotos)
- * 
+ * O passo inicial consiste em ativar os ENDPOINTS
+ *  com ajuda da função:
+ *  
+ENDPOINTS_etiqueta();
+
+E conforme as chamadas (método GET) pode-se apresentar a lista de arquivos não classificados
+(marcados com etiquetas) , e pode-se classificar com uma ou várias etiquetas.
+Nesta versão inicial trabalha-se sem DB 
  */
 
 
@@ -16,13 +18,9 @@ var app = express();
 
 const querystring = require('querystring');
 
-//Futuro:
+//Configuração Inicial:
 
-function registro_db_desde_server(nome_imagem)
-{
-    console.log(nome_imagem);
-}
-
+const pasta_fotos="passo_1"; 
 
 var mime = {
     html: 'text/html',
@@ -37,19 +35,22 @@ var mime = {
 
 ///////////////////////// Funções Auxiliares /////////////////////////////
 
+//Listando a fotos contidas numa PASTA especifica
+
 function listar_fotos(pasta_FOTOS,SAIDA_pasta_arquivo_LISTA_ARQUIVOS)
 {
     const completo_pasta_FOTOS = path.join(__dirname, pasta_FOTOS); 
 
     const dirents = fs.readdirSync(completo_pasta_FOTOS, { withFileTypes: true });
 
-//A estrutura de arquivos é essencial: LEMBRAR que apenas 
-//serão considerados aqueles que estejam em pastas
+    //A estrutura de arquivos é essencial: LEMBRAR que apenas 
+    //serão considerados aqueles que estejam em pastas
 
     const filesNames = dirents.filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
 
-//São coletadas informações nesta pasta que comtem as PASTAS de FOTOS
+    //Desta pasta se cria uma lista (formato TXT) dos arquivos nela 
+    //contidos (lendo subdiretorios se tiver)
 
     function procurar_arquivos(element, index, array) {
 
@@ -76,7 +77,7 @@ function listar_fotos(pasta_FOTOS,SAIDA_pasta_arquivo_LISTA_ARQUIVOS)
 
     }
 
-//Antes de criar o ARCHIVO de listagem, se cria o memso VAZIO
+    //Antes de criar o ARCHIVO de listagem, se cria o memso VAZIO   
 
     fs.writeFile(SAIDA_pasta_arquivo_LISTA_ARQUIVOS+'/lista_arquivos.txt', "", function (err,data) {
         if (err) {
@@ -111,35 +112,53 @@ ENDPOINTS_etiqueta();
 
 function ENDPOINTS_etiqueta() {
 
-//Lendo os diretorios presentes na pasta de ETIQUETAS
+    //Lendo os diretorios presentes na pasta de ETIQUETAS
+
     const completo_pasta_INICIAL = path.join(__dirname, "/etiquetas/"); 
-    const dirents = fs.readdirSync(completo_pasta_INICIAL, { withFileTypes: true });
-    
+
+    const dirents = fs.readdirSync(completo_pasta_INICIAL, { withFileTypes: true });    
     const filesNames = dirents.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
-    
+
+
+    //E para cada pasta (nome da ETIQUETA) "emite" um link
+
     filesNames.forEach(element => {
+        //Com o intuito de facilitar o uso desta apolicação na CONSOLE
+
         console.log("http://localhost:3001/"+element+"/");
+
+        //Cada vez que seja invocada a ETIQUETA (na forma: "ETIQUETA"), 
+        //se faz uma lista das fotos presentas na pasta inicial (pasta_fotos=)
+
         app.get("/"+element+"/", GET_listar_fotos);
         
+        //ENDPOINT para registra: "Uma determinada foto recebe determinada ETIQUETA"
+
         app.get("/"+element+"/registrando/*", registrando);
-//Com o intuito de colocar mais etiquetas   
-//Caso de mais uma (01) etiqueta
+
+        //Com o intuito de colocar mais etiquetas   
+        //Caso de mais uma única (01) etiqueta.
 
         app.get("/"+element+"/*/*.png/:nova/", registrando_mais_etiquetas);
+
+        //GET para entregar qualquer arquivo que seja chamado (conforme a configuração)
+
         app.get("/"+element+"/*", generico);
     });
 }
 
 
-///////////////////////// GET inicial /////////////////////////////
+///////////////////////// função para atenter o GET inicial "/"    
 
-/**
- * 
+/** 
  * Será lida a pasta de ETIQUETAS com o intuito de 
+ * publicar uma lista que contem cada uma das pastas (nome da ETIQUETA) contidas na pasta de 
+ * ETIQUETAS
  */
 function pagina_inicial(req, res, next) {
 
-//Lendo os diretorios presentes na pasta de ETIQUETAS
+    //Lendo os diretorios presentes na pasta de ETIQUETAS
+    
     const completo_pasta_INICIAL = path.join(__dirname, "/etiquetas/"); 
     const dirents = fs.readdirSync(completo_pasta_INICIAL, { withFileTypes: true });
 
@@ -203,9 +222,11 @@ function registrando_mais_etiquetas(req,res,next)
     nome_arquivo=req.path.split("/")[4];
 
     decodificando_endereco_url=querystring.parse(nome_arquivo);
+
     file=Object.keys(decodificando_endereco_url)[0];    
 
 // Construindo o endereço no qual serão colocadas as etiquetas    
+
     //console.log("nome_pasta_etiquetas  "+file);
 
     const SAIDA_pasta_arquivo_LISTA_ARQUIVOS = './etiquetas/'+nova_etiqueta;
@@ -221,11 +242,11 @@ function registrando_mais_etiquetas(req,res,next)
 }
 
 
-///////////////////////// VENEZUELA /////////////////////////////
+/////////////////////////  /////////////////////////////
 
 /**
  * Fase de Leitura de Arquivos:
- * 1) Antes de Classificar as fotos, deve-se ler aquelas que estão no repósitorio GERAL
+ * 1) Antes de Classificar as fotos, deve-se ler aquelas que estão no "repósitorio geral" (pasta_fotos)
  * 2) 
  * 
  */
@@ -240,36 +261,15 @@ function GET_listar_fotos(req, res, next) {
 
 //console.log("(split) listar_fotos  "+req.path.split("/")[1]+" SAIDA_pasta_arquivo_LISTA_ARQUIVOS  "+SAIDA_pasta_arquivo_LISTA_ARQUIVOS);
     
-    const pasta_FOTOS_geral = './passo_1';
-
-    listar_fotos(pasta_FOTOS_geral,SAIDA_pasta_arquivo_LISTA_ARQUIVOS);
+    listar_fotos("./"+pasta_fotos,SAIDA_pasta_arquivo_LISTA_ARQUIVOS);
 
 //console.log(" Gerando Listas ");    
 //Dado que nesta função, apenas está processando arquivos, terá que fazer un NEXT (express)
     next();
 
 }
-
-// Quando se tem fotos CLASSIFICADAS, podem-se listar no sistema
-
-function venezuela_listar_fotos_classificadas(req, res, next) {
-
-    const venezuela_SAIDA_pasta_arquivo_LISTA_ARQUIVOS = './etiquetas/venezuela';
-    
-    const pasta_FOTOS_geral = './passo_1';
-
-    listar_fotos(pasta_FOTOS_geral,venezuela_SAIDA_pasta_arquivo_LISTA_ARQUIVOS);
-
-//console.log(" Gerando Listas ");    
-//Dado que nesta função, apenas está processando arquivos, terá que fazer un NEXT (express)
-    next();
-
-}
-
 
 // Função para entregar arquivos HTML JS , etc.
-
-const pasta_fotos="passo_1"; 
 
 /**
 Função que entrega qualquer arquivo solicitado.
@@ -327,10 +327,10 @@ function generico(req, res, next) {
 //
 //
 
-///////////////////////// FIM  
+///////////////////////// 
 
 /*
- * Servidor escutando na porta 3000 
+ * Servidor escutando na porta 3001 
  */
 
 app.listen(3001, function () {
