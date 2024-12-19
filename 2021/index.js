@@ -67,6 +67,11 @@ function listar_fotos(pasta_FOTOS,SAIDA_pasta_arquivo_LISTA_ARQUIVOS)
         }
         
 
+
+
+
+
+        
 //console.log("ARQUIVO  informacao_TXT  "+completo_pasta_FOTOS+'/lista_arquivos.txt', informacao_TXT);
 
         fs.appendFile(SAIDA_pasta_arquivo_LISTA_ARQUIVOS+'/lista_arquivos.txt', informacao_TXT, function (err,data) {
