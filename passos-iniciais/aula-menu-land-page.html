@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+     <!--META TAG--> 
+     <meta property="og:type" content="Website"/>
+     <meta property="og:title" content="Bem-vindo ao nosso Restaurante"/> <!--nome do negocio--> 
+     <meta property="og:image" content="https://cardapio-restaurante-weld.vercel.app/icons/logo.png"/>
+     <meta property="og:description" content="Melhor restaurante da cidade!"/>
+     <meta property="og:site_name" content="Bem-vindo ao nosso Restaurante"/> <!--aqui vc coloca o nome do negocio--> 
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+
+
+    <link rel="shortcut icon" href="icons/dev-icon-1.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="./estilo/output.css">
+    <style>
+        .bg-home {
+            background-image: url('icons/bg.png'); 
+        }
+    </style>
+</head>
+<body>
+<!--HEADER-->
+    <header class="w-full h-[420px] bg-zinc-900 bg-home bg-cover bg-center relative">
+        <div class="w-full h-full flex flex-col justify-center items-center bg-black bg-opacity-50">
+            <img 
+                src="icons/logo.png"
+                alt="logo"
+                class="w-32 h-32 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-110"
+            />
+            <h1 class="text-3xl mt-4 mb-2 font-bold text-white">Bem-vindo ao nosso Restaurante</h1>
+            
+            <span class="text-white font-medium">O seu endereço aqui! - ES</span>
+            
+            <div class="bg-green-500 px-4 py-1 rounded-lg mt-5 transform transition-transform duration-200 hover:scale-110" id="date-span">
+                <span class="text-white font-medium">Seg á Dom - 11:00 ás 19:00</span>
+            </div>
+        </div>
+    </header>
+ <!--FIM DO HEADER-->
+    
+    <h2 class="text-3xl md:text-3xl font-bold text-center mt-9 mb-6">Conheça o nosso menu - Almoço</h2>
+
+    <!--  INICIO DO MENU-->
+    <div id="menu" class="w-full px-4">
+        <main class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 mx-auto max-w-7xl">
+           
+           
+           
+
+               <div class="flex flex-col sm:flex-row sm:justify-between gap-4 p-4 border rounded-lg transform transition-transform duration-200 hover:scale-105">
+                <img src="comida/macarronada.jpg" 
+                alt="Macarronada" 
+                class="w-32 h-32 rounded-md transform transition-transform duration-200 hover:scale-110"
+                />
+
+                <div>
+                    <p class="font-bold">Macarronada</p>
+                    <p class="text-sm">Pode ser combinada com os seguintes molhos: Bolonhesa (tomate e carne moída)
+                        Carbonara (bacon, ovos e parmesão)
+                        Tiras de carne com molho de queijo
+                        Frango com molho branco!</p>
+
+                    <div class="flex items-center gap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">R$ 20.00</p>
+                        <button 
+                            class="bg-gray-900 px-4 gap-10 rounded add-to-card-btn text-white transform transition-transform duration-200 hover:scale-110"
+                            data-name="Macarronada"
+                            data-price="20.00"
+                        >
+                            <i class="shopping_cart text-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#314D1C">
+                                    <path d="M284.53-80.67q-30.86 0-52.7-21.97Q210-124.62 210-155.47q0-30.86 21.98-52.7Q253.95-230 284.81-230t52.69 21.98q21.83 21.97 21.83 52.83t-21.97 52.69q-21.98 21.83-52.83 21.83Zm400 0q-30.86 0-52.7-21.97Q610-124.62 610-155.47q0-30.86 21.98-52.7Q653.95-230 684.81-230t52.69 21.98q21.83 21.97 21.83 52.83t-21.97 52.69q-21.98 21.83-52.83 21.83ZM238.67-734 344-515.33h285.33l120-218.67H238.67ZM206-800.67h589.38q22.98 0 34.97 20.84 11.98 20.83.32 41.83L693.33-490.67q-11 19.34-28.87 30.67-17.87 11.33-39.13 11.33H324l-52 96h487.33V-286H278q-43 0-63-31.83-20-31.84-.33-68.17l60.66-111.33-149.33-316H47.33V-880h121.34L206-800.67Zm138 285.34h285.33H344Z"/>
+                                </svg>
+                            </i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--  FIM DO PRODUTO 10-->
+
+            
+        </main>
+<!--  GRID DAS BEBIDAS-->
+        
+
+
+        <div class="mx-auto max-w-7x1 px-2 my-2">
+            <h2 class="text-3xl md:text-3xl font-bold text-center mt-9 mb-6">Bebidas</h2>
+        </div>
+
+        <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 mx-auto max-w-7xl" id="menu">
+
+               <!--  INICIO DO PRODUTO 1 BEBIDAS-->
+            
+               <div class=" gap-4 p-4 border rounded-lg transform transition-transform duration-200 hover:scale-105">
+                <img src="refri/agua.png" 
+                alt="Água mineral" 
+                class="w-32 h-32 rounded-md transform transition-transform duration-200 hover:scale-110"
+                />
+
+                <div>
+                    <p class="font-bold">Água mineral</p>
+                    <p class="text-sm">Água mineral com ou sem gás!</p>
+
+                    <div class="flex items-center gap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">R$ 2.50</p>
+                        <button 
+                            class="bg-gray-900 px-5 rounded add-to-card-btn text-white transform transition-transform duration-200 hover:scale-110"
+                            data-name="Água mineral"
+                            data-price="2.50"
+                        >
+                            <i class="shopping_cart text-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#314D1C">
+                                    <path d="M284.53-80.67q-30.86 0-52.7-21.97Q210-124.62 210-155.47q0-30.86 21.98-52.7Q253.95-230 284.81-230t52.69 21.98q21.83 21.97 21.83 52.83t-21.97 52.69q-21.98 21.83-52.83 21.83Zm400 0q-30.86 0-52.7-21.97Q610-124.62 610-155.47q0-30.86 21.98-52.7Q653.95-230 684.81-230t52.69 21.98q21.83 21.97 21.83 52.83t-21.97 52.69q-21.98 21.83-52.83 21.83ZM238.67-734 344-515.33h285.33l120-218.67H238.67ZM206-800.67h589.38q22.98 0 34.97 20.84 11.98 20.83.32 41.83L693.33-490.67q-11 19.34-28.87 30.67-17.87 11.33-39.13 11.33H324l-52 96h487.33V-286H278q-43 0-63-31.83-20-31.84-.33-68.17l60.66-111.33-149.33-316H47.33V-880h121.34L206-800.67Zm138 285.34h285.33H344Z"/>
+                                </svg>
+                            </i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--  FIM DA BEBIDA 1 -->
+            <!--  FIM DA BEBIDA 6 -->
+            
+        </div>
+
+        <div class="mx-auto max-w-7x1 px-2 my-2">
+            <h2 class="text-3xl md:text-3xl font-bold text-center mt-9 mb-6">Sobremesas</h2>
+        </div>
+
+        <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 mx-auto max-w-7xl" id="menu">
+
+
+                <!--  INICIO DO PRODUTO 1 SOBREMESAS-->
+
+                <!--  FIM DA SOBREMESA 1 -->
+    
+    
+                    <!--  INICIO DO PRODUTO 2 SOBREMESA-->
+    
+                <!--  FIM DA SOBREMESA 2 -->
+    
+    
+                    <!--  INICIO DO PRODUTO 3 SOBREMESA-->
+    
+                    <div class=" gap-4 p-4 border rounded-lg transform transition-transform duration-200 hover:scale-105">
+                    <img src="sobremesa/mousse-maracuja.png" 
+                    alt="Mousse de maracujá" 
+                    class="w-32 h-32 rounded-md transform transition-transform duration-200 hover:scale-110"
+                    />
+    
+                    <div>
+                        <p class="font-bold">Mousse de maracujá</p>
+                        <p class="text-sm">Só temos disponiveis nesse sabor!</p>
+    
+                        <div class="flex items-center gap-2 justify-between mt-3">
+                            <p class="font-bold text-lg">R$ 5</p>
+                            <button 
+                                class="bg-gray-900 px-5 rounded add-to-card-btn text-white transform transition-transform duration-200 hover:scale-110"
+                                data-name="Mousse de maracujá"
+                                data-price="5"
+                            >
+                                <i class="shopping_cart text-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#314D1C">
+                                        <path d="M284.53-80.67q-30.86 0-52.7-21.97Q210-124.62 210-155.47q0-30.86 21.98-52.7Q253.95-230 284.81-230t52.69 21.98q21.83 21.97 21.83 52.83t-21.97 52.69q-21.98 21.83-52.83 21.83Zm400 0q-30.86 0-52.7-21.97Q610-124.62 610-155.47q0-30.86 21.98-52.7Q653.95-230 684.81-230t52.69 21.98q21.83 21.97 21.83 52.83t-21.97 52.69q-21.98 21.83-52.83 21.83ZM238.67-734 344-515.33h285.33l120-218.67H238.67ZM206-800.67h589.38q22.98 0 34.97 20.84 11.98 20.83.32 41.83L693.33-490.67q-11 19.34-28.87 30.67-17.87 11.33-39.13 11.33H324l-52 96h487.33V-286H278q-43 0-63-31.83-20-31.84-.33-68.17l60.66-111.33-149.33-316H47.33V-880h121.34L206-800.67Zm138 285.34h285.33H344Z"/>
+                                    </svg>
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--  FIM DA SOBREMESA 3 -->
+    
+    
+                    <!--  INICIO DO PRODUTO 4 SOBREMESA-->
+    
+                <!--  FIM DA SOBREMESA 4 -->
+    
+    
+                    <!--  INICIO DO PRODUTO 5 SOBREMESA-->
+        
+                    
+                <!--  FIM DA SOBREMESA 5 -->
+
+                    <!--  INICIO DO PRODUTO 6 SOBREMESA-->
+        
+                    
+                    <!--  FIM DA SOBREMESA 6 -->
+
+
+                    <!--  INICIO DO PRODUTO 7 SOBREMESA-->
+        
+                    <!--  FIM DA SOBREMESA 7 -->
+    
+    </div>
+    <!--  FIM DO MENU-->
+
+
+<!--INICIO MODAL-->
+
+<div class="bg-black opacity-95 w-full h-full fixed top-0 left-0 z-[99]  items-center justify-center hidden"
+id="cart-modal">
+    
+    <div class="bg-white p-5 rounded-md min-w-[90%] md:min-w-[600px]">
+        <h2 class="text-center font-bold text-2xl mb-2">Meu carrinho</h2>
+
+        <div id="cart-items" class="flex justify-between mb-2 flex-col"></div>
+
+        <p class="font-bold">Total: <span id="cart-total">0.00</span></p>
+
+        <p class="font-bold mt-4">Endereço de entrega: </p>
+        <input
+            type="text"
+            placeholder="Digite o seu endereço completo..."
+            id="andress"
+            class="w-full border-2 p-1 rounded my-1">
+
+        <p class="text-red-500 hidden" id="andress-warn">Digite seu endereço completo...</p>
+
+        <!-- Botões separados visualmente -->
+        <div class="flex items-center justify-between mt-5 w-full space-x-40">
+            <button id="close-modal-btn" class="bg-red-500 text-white px-4 py-1 rounded">Fechar</button>
+            <button id="checkout-btn" class="bg-green-500 text-white px-4 py-1 rounded">Finalizar pedido</button>
+        </div>
+
+    </div>
+
+</div>
+
+<!--FIM DO MODAL-->
+
+
+
+
+
+
+    <!--FIM DO MODAL-->
+
+
+
+
+    <!--CARD FOOTER-->
+    
+    <footer class=" mt-2.5 w-full bg-green-500 m-top py-0 fixed bottom-0 z-40 flex items-center justify-center ">
+        <button 
+        class= "flex items-center gap-2 text-white font-bold" 
+        id="cart-btn">
+            (<span id="cart-count">0</span>)
+            Veja seus pedidos
+            <i class="shopping_cart_checkout"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m480-560-56-56 63-64H320v-80h167l-64-64 57-56 160 160-160 160ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"/></svg></svg></i>
+        </button>
+    </footer>
+
+    <footer class="custom-footer text-faded text-center py-6">
+        <div class="container">
+            <p class="m-0 small">Copyright &copy; Website feito por Vinicius Mendes</p>
+        </div>
+    </footer>
+    
+
+
+
+
+    <!--CARD FOOTER-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="script.js"></script>
+
+
+
+</body>
+</html>
